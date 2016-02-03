@@ -1,0 +1,274 @@
+/*
+WARNING: this file was created manually so there might be errors.
+Please let me know if you find any
+*/
+
+[ {
+   title: "26-2",
+   composer: "John Coltrane",
+   musicalStyle: "Medium Up Swing",
+   key: "F",
+      bars: [
+      {
+         timeSignature: "4/4",
+         rehearsalLetter: "A",
+         leftDoubleBarLine: "true",
+         chords: "Fmaj7 / Ab7",
+      },
+      {
+          chords: "Dbmaj7 / E7",
+      },
+      {
+             chords: "Amaj7 / C7",
+      },
+      {
+            chords: "Cm7 / F7",
+      },
+       {
+            chords: "Bbmaj7 / Db7",
+       },
+      {
+            chords: "Gbmaj7 / A7",
+       },
+      {
+             chords: "Dm7 / G7",
+       },
+      {
+          rightDoubleBarLine: "true",
+             chords: "Gm7 / C7",
+      },
+      {
+         rehearsalLetter: "A",
+         leftDoubleBarLine: "true",
+         chords: "Fmaj7 / Ab7",
+      },
+      {
+          chords: "Dbmaj7 / E7",
+       },
+      {
+         chords: "Amaj7 / C7",
+      },
+      {
+         chords: "Cm7 / F7",
+       },
+       {
+            chords: "Bbmaj7 / Ab7",
+       },
+      {
+             chords: "Dbmaj7 / E7",
+      },
+      {
+             chords: "Amaj7 / C7",
+      },
+      {
+         rightDoubleBarLine: "true",
+         chords: "Fmaj7",
+      },
+      {
+         rehearsalLetter: "B",
+         leftDoubleBarLine: "true",
+         chords: "Cm7 / F7",
+       },
+      {
+         chords: "Em7 / A7",
+      },
+      {
+         chords: "Dmaj7 / F7",
+      },
+      {
+         chords: "Bbmaj7",
+      },
+      {
+         chords: "Ebm7",
+      },
+      {
+         chords: "Ab7",
+      },
+      {
+         chords: "Dbmaj7",
+      },
+      {
+         rightDoubleBarLine: "true",
+         chords: "Gm7 / C7",
+      },
+       {
+         rehearsalLetter: "A",
+         leftDoubleBarLine: "true",
+         chords: "Fmaj7 / Ab",
+      },
+      {
+         chords: "Dbmaj7 / E7",
+      },
+      {
+         chords: "Amaj7 / C7",
+      },
+      {
+         chords: "Cm7 / F7",
+     },
+      {
+             chords: "Dbmaj7 / Ab7",
+      },
+      {
+            chords: "Dbmaj7 / E7",
+      },
+      {
+           chords: "Amaj7 / C7",
+      },
+      {
+         finalBarLine: "true",
+         chords: "Fmaj7",
+       }
+      ]
+},
+{
+   title: "500 Miles High",
+   composer: "Chick Corea",
+   musicalStyle: "Bossa Nova",
+   bars: [
+      {
+         timeSignature: "4/4",
+         leftDoubleBarLine: "true",
+         chords: "Em7",
+      },
+      {
+         chords: "%",
+       },
+      {
+         chords: "Gm7",
+      },
+      {
+          chords: "%",
+      },
+      {
+         chords: "Bbmaj7",
+      },
+      {
+         chords: "%",
+      },
+      {
+          chords: "Bdim7",
+      },
+      {
+         chords: "E7#9",
+      },
+      {
+         chords: "Am7",
+      },
+      {
+         chords: "%",
+      },
+      {
+         chords: "F#dim7",
+      },
+      {
+        chords: "%",
+      },
+      {
+        chords: "Fm7",
+      },
+      {
+         toCodaSign: "true",
+         chords: "%",
+      },
+      {
+         chords: "Cm7",
+      },
+      {
+         chords: "%",
+      },
+      {
+         chords: "B7#9",
+      },
+      {
+         finalBarLine: "true",
+          chords: "%",
+      },
+      {
+         codaSign: "true",
+         chords: "Cm7",
+      },
+      {
+         chords: "%",
+       },
+      {
+            chords: "Abmaj7",
+      },
+      {
+         rightRepeat: "true",
+         chords: "%",
+      },
+      ]
+},
+{
+   title: "502 Blues",
+   composer: "Jimmy Rowles",
+   musicalStyle: "Waltz",
+   bars: [
+      {
+         timeSignature: "3/4",
+         leftRepeat: "true",
+         chords: "Am7",
+      },
+      {
+          chords: "Dbmaj7",
+       },
+      {
+         chords: "Bdim7",
+      },
+      {
+         chords: "E7#9",
+      },
+       {
+         chords: "Am7",
+      },
+      {
+        chords: "Dbmaj7",
+      },
+      {
+         chords: "Bdim7",
+      },
+      {
+         chords: "E7#9",
+      },
+      {
+         chords: "Cm7",
+      },
+      {
+         chords: "F7b9",
+      },
+      {
+         chords: "Bbmaj7",
+      },
+      {
+            chords: "Abm7 / Db7",
+      },
+      {
+         ending: "1",
+         chords: "F#dim7",
+      },
+      {
+         chords: "B7b9",
+      },
+      {
+         chords: "Emaj7#5",
+       },
+      {
+         rightRepeat: "true",
+         chords: "Emaj7#5 / E7",
+       },
+      {
+         ending: "2",
+         chords: "F#dim7",
+      },
+      {
+         chords: "B7b9",
+      },
+      {
+         chords: "Em7",
+      },
+      {
+         finalBarLine: "true",
+         chords: "%",
+      }
+      ]
+}]
