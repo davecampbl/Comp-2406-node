@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h1 #{username}'s Account
+  p Welcome #{username}
+  form(action="/logout", method="post")
+        button(type="submit") Logout
+  h2 Users logged in
+  ul
+    each val, user in loggedInUsers
+      li= user

@@ -1,0 +1,70 @@
+extends layout
+//jade file for the TA
+block content
+    h1 #{username}'s Account
+    p Welcome TA #{username}
+    //logout form
+    form(action="/logout", method="post")
+        button(type="submit") Logout
+    h2 Users logged in
+    ul
+        each val, user in loggedInUsers
+            li= user
+    //display the table
+    h3 Table
+        table(border='5')
+            tr
+                th Assignment
+                th Started
+                th Due
+                th Completed
+                th TA
+                th Comment
+                th row#
+            - var n = 0
+            -var str= assignments[0].name
+            ul
+                while n < assignments.length
+                    -var h=0
+                    tr
+                    td=assignments[n].name
+                    td=assignments[n].start.toDateString()
+                    td=assignments[n].end.toDateString()
+                    if assignments[n].completed
+                        td=assignments[n].completed.toDateString()
+                    else
+                        td Incomplete
+                    td=assignments[n].tas
+                    -var s="Late"
+                        if(s==assignments[n].comment)
+                            td(style='color:red')=assignments[n].comment
+                        else
+                            td(style='color:green')=assignments[n].comment
+                    td=n++
+                    ul
+            ul
+
+
+
+    //form to show "in progress"
+    h5 Start Assignment
+    form(action="/startAssignment", method="post")
+        div.control-group.input-append
+            input(type="text", name="name")
+            label.add-on(for="name") Assignment name
+
+
+        button(type="submit") start Assignment
+    //form to finish assignments
+    h6 Complete assignment
+    form(action="/completeAssignment", method="post")
+        div.control-group.input-append
+            input(type="text", name="name")
+            label.add-on(for="name") Assignment name
+            br
+            br
+            input(type="date",name="dateend")
+            label.add-on(for="dateend") Date Completed
+
+
+        button(type="submit") complete Assignment
