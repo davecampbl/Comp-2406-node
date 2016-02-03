@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title id="title">Song</title>
+</head>
+<body>
+
+<p id="lyrics">fjhdslkafh</p>
+
+<script type="text/javascript">
+
+    var reader=new FileReader();
+    var fi=new Blob("song1.txt");
+    var text=reader.readAsText(fi);
+    document.getElementById("lyrics").innerHTML="song1.txt";
+    var chords="";
+    var lyrics="";
+    var ans="";
+    var chr=false;
+    var num=0;
+    var length=text.length;
+    for(var i=0;i<length;i++) {
+        if(text.charAt(i)=='['){
+            chr=true;
+            continue;
+        }
+        if(text.charAt(i)==']'){
+            chr=false;
+            continue;
+        }
+        if(chrd==true){
+            chords+=text.charAt(i);
+            num++;
+            continue;
+        }
+        if(text.charAt(i)=='\n'){
+            chords+="\n";
+            lyrics+="\n";
+            ans+=chords;
+            ans+=lyrics;
+            //console.log(chords.green);
+            chords="";
+            //console.log(lyrics.cyan);
+            lyrics="";
+            continue;
+        }
+        lyrics+=text.charAt(i);
+        if(num<=0){
+            chords+=" ";
+            continue;
+        }
+        num--;
+        continue;
+
+
+}
+
+document.getElementById("lyrics").innerHTML=ans;
+
+</script>
+</body>
+</html>

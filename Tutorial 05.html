@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>COMP2501 - Tutorial 1</title>
+<link href="template.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<p class="header">COMP 2406 - Fall 2014 Tutorial #5</p>
+<p class="header subheader">Static Server with Node, Express, and Express Generator</p>
+<hr/>
+<p>&copy; L.D. Nel 2014</p>
+<hr />
+<p class="red">Revisions</p>
+<p class="red">&nbsp;</p>
+<hr />
+<p class="segment-header">Description:</p>
+<p>The purpose of this tutorial is to get you  working with Express and Express Generator. We will build a simple static server using three aproaches:</p>
+<p>1)Using Node.js to read files from a choosen directory.</p>
+<p>2)Using the npm module express and adding functionallity we need.</p>
+<p>3)Using npm module express-generator to generate the framework  app and use only the static server portion of it for now.</p>
+<p>For each section we will ask you to make a small modification to the code. IMPORTANT: do each of the three questions in its own sub-directory. That way you can keep the code for each problem separate.</p>
+<p>&nbsp;</p>
+<p class="red">IMPORTANT: This tutorial is meant as a homework assignment and for you to demonstrate your results at your tutorial session. You will not be able to complete it if you only start when you come to the tutorial. You will need to read about and learn those aspects of javascript that pertain to this tutorial on your own and come up with a strategy to solve the problems.</p>
+<p>To get credit for the tutorial you must complete, or make significant progress on, the exercise problems provided and demonstrate your results to the tutorial TA before you leave the tutorial.<br />
+</p>
+<p>&nbsp;</p>
+<hr/>
+<p class="segment-header">Instructions:<br />
+</p>
+<p class="segment-header">&nbsp;</p>
+<p class="segment-header">&nbsp;</p>
+<p class="segment-header"><span class="black-bold">Problem 1) Static Server with Node.js</span></p>
+<p>Note to do these problems you need node.js and npm set up.</p>
+<p>Duplicate the directory <span class="code">01NodeSever</span> found in the demo code. Run the simple static server  by executing </p>
+<p class="code">node 01_static_node server.js</p>
+<p>and then visit the following addresses with your browser:</p>
+<p class="code">http://localhost:3000/greeting.html</p>
+<p class="code">http://localhost:3000/index.html</p>
+<p class="code">http://localhost:3000/table.html</p>
+<p class="code">http://localhost:3000/table_css_internal.html</p>
+<p class="code">http://localhost:3000/table_css_external.html</p>
+<p>These are all files found in the <span class="code">public</span> subdirectory of the <span class="code">01NodeServer</span> directory.</p>
+<p>For <span class="code">table_css_internal.html</span> you should see a table that looks like the following:</p>
+<p><img src="images/problem1A.png" width="1111" height="954" alt="problem1A" /></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>However when you visist <span class="code">table_css_external.html</span> you get a table like the following:</p>
+<p>&nbsp;</p>
+<p><img src="images/problem1B.png" width="931" height="810" alt="problem1B" /></p>
+<p>&nbsp;</p>
+<p>Something appears to have gone wrong. More specifically the css style sheet does not appear to have been applied to the table as in the previous example. For this exercise we want you to fix this problem. (Examine the .html files to see how they are set up. one uses css styles within the html file the other uses an external css file.)</p>
+<p>Open the <span class="code">01_static_node server.js</span> file and figure out what the code is doing. Figure out what the problem is and then write some javascript code to fix the problem. (Hint: when the client asks for a css file the server is sending it back as content type 'text/html'. This is problably not appropriate the appropriate MIME type for css files.)</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p class="segment-header"><span class="black-bold">Problem 2)</span></p>
+<p>For problem 2 we are going to use the npm <span class="code">express</span> module to build a simple static server by adding functionally to an &quot;bare bones&quot; express app.</p>
+<p>Duplicate the directory <span class="code">02ExpressServer</span> found in the demo code.</p>
+<p>Try and run the server</p>
+<p class="code">node 02_express_static_server.js</p>
+<p>You should get an error like the following:</p>
+<p><img src="images/problem2A.png" width="1119" height="346" alt="problem2A" /></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>The problem is that the express module has not yet been loaded. You could load the module with the command <span class="code">npm install express</span> but instead open the <span class="code">package.json</span> file found with the code and examine it. It should look like the following:</p>
+<pre>
+{
+  "name" : "example1",
+  "description" : "simple express static server",
+  "version" : "0.0.1",
+  "dependencies" : {
+     "express" : "4.x"
+   } 
+}
+</pre>
+<p>Notice that it specfies &quot;express&quot; as a dependency. Moreover it specifies that express should be version 4.x meaning any version 4.0 or later. So instead of installing the module with <span class="code">npm install express</span> we will instead use the command:</p>
+<p class="code">npm install</p>
+<p>This will install all the modules found listed in the dependencies section of the accompanying <span class="code">package.json</span> file. Go ahead and try it and the re-launch the server with:</p>
+<p><span class="code">node 02_express_static_server.js</span></p>
+<p>This time you should be able to visit all pages found in the public sub-directory and they all should work because express is taking are of setting the content type properly for the client.</p>
+<p>Open the file <span class="code">02_express_static_server.js</span> and examine the code:</p>
+<pre>
+var express = require('express'); 
+var app = express();
+
+var root_dir = '/public'; //root directory for our static pages
+
+//catch all request an log them using app.all route
+app.all('*', function(req, res, next){
+  console.log('-------------------------------');
+  console.log('req.path: ', req.path);
+  console.log('serving:' + __dirname + root_dir + req.path);
+  next(); //allow next route or middleware to run
+});
+
+//use static middleware to implement static server
+app.use(express.static(__dirname + root_dir));
+
+app.listen(3000);
+
+console.log('Static Express Server Running at http://127.0.0.1:3000  CNTL-C to quit');</pre>
+<p>&nbsp;</p>
+<p>Notice for each request we are printing some information about the request to the console. It looks like this:</p>
+<p><img src="images/problem2C.png" width="1121" height="316" alt="problem2C" /></p>
+<p>&nbsp;</p>
+<p>This is called logging. There are several npm modules that add loggers to an express application. One of the popular ones is morgan.</p>
+<p>For this exercise problem we want you to add the morgan logger to the express application. Here are the steps:</p>
+<p>1) Modify the <span class="code">package.json</span> file to add <span class="code">morgan</span> version <span class="code">1.3.2</span> to the dependencies and then re-run <span class="code">npm install</span></p>
+<pre>
+{
+  "name" : "example1",
+  "description" : "simple express static server",
+  "version" : "0.0.1",
+  "dependencies" : {
+     "express" : "4.x",
+     "morgan" : "1.3.2"
+   } 
+}
+
+</pre>
+<p> 2) Modify <span class="code">02_express_static_server.js</span> and add</p>
+<p><span class="code">var logger = require('morgan');  //request logger</span><br />
+</p>
+<p>to the file.</p>
+<p>3) <span class="bold">Above</span> the statement:</p>
+<p class="code">//use static middleware to implement static server<br />
+app.use(express.static(__dirname + root_dir));</p>
+<p>add the statement:</p>
+<p><span class="code">//use morgan logger to keep request log files<br />
+app.use( logger('dev'));</span></p>
+<p>Now re-run the server. You should see the logger writing output the console:</p>
+<p><img src="images/problem2D.png" width="1094" height="314" alt="problem2D" /></p>
+<p>The first time you load a file you should see the &quot;200&quot; success code. If you reload a file you will most likely see the &quot;304&quot; code as shown below. What does that mean?<br />
+</p>
+<p><img src="images/problem2E.png" width="1093" height="284" alt="problem2E" /></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p class="segment-header"><span class="black-bold">Problem 3)</span></p>
+<p>Finally we want to &quot;auto-magically&quot; generate a complete default express app using the <span class="code">express-generator</span> module. Here we will outline the install instructions. You may have to do some research and tweak these for you own situation. </p>
+<p>Note: I'm going to describe this from the point of view of a Windows machine on which the node.exe and npm.cmd binaries were downloaded (as opposed to the full &quot;install button&quot; install of these apps) so this should work on the lab machines. Here we go:</p>
+<p>Open an command window where your <span class="code">node.exe</span> and <span class="code">npm.cmd</span> are located.</p>
+<p>To install the the express-generator execute:</p>
+<p class="code">npm install -g express-generator@4.0.0</p>
+<p>The <span class="code">-g</span> option is important and will cause the express module to be loaded &quot;globally&quot; at the same location as where your <span class="code">node.exe</span> and <span class="code">npm.cmd</span> are installed. If you don't you the <span class="code">-g</span> option you are likely to get an error. You should see the following:</p>
+<p><img src="images/problem3A.png" width="978" height="501" alt="problem3A" /></p>
+<p>&nbsp;</p>
+<p>(NOTE: For Max OS X and Linux users, if there is an error installing globally, most likely your system <br />
+  requires root/ administrator rights to write to the folder. In this case, <span class="code">$ sudo npm install -g express-generator@ 4.0.0</span> might be needed.)</p>
+<p>If the install of express-generator is successfull you should see an <span class="code">express.cmd</span> file and an <span class="code">express</span> file located where your <span class="code">node.exe</span> is and within the <span class="code">node_modules</span> located there you should see an <span class="code">express-generator</span> module.</p>
+<p>&nbsp;</p>
+<p>To verify that express-generator is installed execute (note -V must be capital, not -v):</p>
+<p class="code">express -V</p>
+<p>You should see the output: 4.0.0</p>
+<p>Now create a directory for this problem called <span class="code">03ExpressGenerator,</span> open a command window on that directory. The directory should be empty at this point:</p>
+<p><img src="images/problem3B.png" width="932" height="377" alt="problem3B" /></p>
+<p>&nbsp;</p>
+<p>Next create a &quot;vanilla&quot; <span class="code">package.json</span> file by executing</p>
+<p class="code">npm init</p>
+<p>You will be asked a bunch of questions. The output below shows you my answers.</p>
+<p><img src="images/problem3C.png" width="1011" height="964" alt="problem3C" /></p>
+<p>&nbsp;</p>
+<p>This will create a <span class="code">package.json</span> file in your previously empty directory. Here is what mine looked like:</p>
+<pre>
+{
+  "name": "03ExpressGenerator",
+  "version": "0.0.1",
+  "description": "my first express app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "L.D.Nel",
+  "license": "ISC"
+}
+
+</pre>
+<p>Now locally install the express  module (version 4.1.2) by executing the command:</p>
+<p class="code">npm install express@4.1.2 --save</p>
+<p>Here the <span class="code">--save</span> options will cause the <span class="code">package.json</span> file to be updated as well so that in the future only an <span class="code">npm install</span> will be required to install your modules:</p>
+<pre>
+{
+  "name": "03ExpressGenerator",
+  "version": "0.0.1",
+  "description": "my first express app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "L.D.Nel",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.1.2"
+  }
+}
+
+</pre>
+
+<p>We now have express installed and the express.exe generator installed. We can now generate an express app. To do so we will execute the express.exe command line tool that will build a default express framework app.</p>
+<p>To see the avialable options execute:</p>
+<p class="code">express -h</p>
+<p>You should see something like the following:</p>
+<p><img src="images/problem3D.png" width="997" height="489" alt="problem3D" /></p>
+<p>&nbsp;</p>
+<p>Now generate the framework app by executing:</p>
+<p class="code">express</p>
+<p>Here is the output:</p>
+<p><img src="images/problem3E.png" width="861" height="953" alt="problem3E" /></p>
+<p>&nbsp;</p>
+<p>As you can see it generates a bunch of directories which we will be learning about in the coming weeks.</p>
+<p>Now to install the modules needed for the app exectute:</p>
+<p class="code">npm install</p>
+<p>This should install a bunch of modules including things in your <span class="code">package.json</span> file.</p>
+<p>Finally to run the app execute</p>
+<p class="code">npm start</p>
+<p>or alternatively</p>
+<p class="code">node ./bin/www</p>
+<p>should work as well.</p>
+<p>Once the server is running you can use your browser to visit <span class="code">http://localhost:3000</span> and you should see:</p>
+<p><img src="images/problem3F.png" width="543" height="332" alt="problem3F" /></p>
+<p>&nbsp;</p>
+<p>Congratulations you have a scaffold express app running.</p>
+<p>&nbsp;</p>
+<p>Exercise: Finally. This express app is already set up to serve static pages. It has a <span class="code">public</span> directory already buit. You should now be able to put in there the same files that were being served in the previous questions. Note this public directory has some subdirectories for <span class="code">images</span>, <span class="code">javascript</span>, and <span class="code">css</span> style sheets. So play around with placing your files in the appropriate places until you have this app serving the same static files as in the other two questions and correctly finding the images and css styles.</p>
+<p class="red">When you have completed these exercises show your results to the TA's to get credit for the tutorial.</p>
+<p>&nbsp;</p>
+
+</body>
+</html>

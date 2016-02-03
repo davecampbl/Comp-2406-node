@@ -1,0 +1,128 @@
+R1.2)
+I am choosing not to do this in Powerpoint because I am atrocious at powerpoint and answering this question would take much longer than it did to finish the rest of the assignment.
+
+code:
+function quicksort(array){
+	if(array.length<=0) return [];
+	var less=[];
+	var greater=[];
+	var equal=[]
+	var pivot=array[0];
+
+	for(var i=0;i<array.length;i++){
+		if(pivot>array[i])
+			less.push(array[i]);
+		if(pivot==array[i])
+			equal.push(array[i]);
+		if(pivot<array[i])
+			greater.push(array[i]);
+	}
+
+return quicksort(less).concat(equal,quicksort(greater));
+
+}
+
+var lis= new Array(3,1,2);
+
+console.log(quicksort(lis));
+
+
+So firstly Main() runs and is the first thing on the stack
+Stack:main
+heap:
+
+the first thing it does is create lis as a new array with the values {3,1,2}
+Stack: main
+heap: lis{3,1,2}
+
+then main evaluates the console.log(quicksort(lis)) and has to run the quicksort algorithm on lis
+Stack main, console.log,quicksort(lis)
+heap: lis{3,1,2}
+
+Quicksort then checks if lis is of length 0, which it isn't so it continues one
+Stack:main,console.log,quicksort({3,1,2}),array.length
+heap: lis{3,1,2}
+
+Quicksort then creates the local variables less, greater, equal and pivot and gives them values
+Stack: main,console.log,quicksort({3,1,2})
+Quicksort({3,1,2}) local variables:less=greater=equal={}, pivot=3
+heap: lis{3,1,2}
+
+The quicksort then iterates through the array and sorts the elements into three lists.
+Stack:main,console.log,quicksort({3,1,2})
+Quicksort({3,1,2}) local variable:less={1,2}, equal={3}, greater={}, pivot=3;
+heap: lis{3,1,2}
+
+Quicksort then tries to return but must first evaluate quicksort({1,2}) so quicksort({1,2}) is put onto the stack
+Stack:main,console.log,Quicksort({3,1,2}),quicksort({1,2})
+Quicksort({3,1,2}) local variable:less={1,2}, equal={3}, greater={}, pivot=3;
+heap: lis{3,1,2}
+
+Quicksort(lesS) now runs, the length is not zero, and iterates through the list sorting the elements
+Stack:main,console.log,Quicksort({3,1,2}),quicksort({1,2})
+Quicksort({3,1,2}) local variable:less={1,2}, equal={3}, greater={}, pivot=3;
+Quicksort({1,2}) local variable:less={},equal={1},greater={2},pivot=1
+heap: lis{3,1,2}
+
+Quicksort({1,2}) now tries to return but has to evaluate quicksort({})
+Stack:main,console.log,Quicksort({3,1,2}),quicksort({1,2}),quicksort({})
+Quicksort({3,1,2}) local variable:less={1,2}, equal={3}, greater={}, pivot=3;
+Quicksort({1,2}) local variable:less={},equal={1},greater={2},pivot=1
+heap: lis{3,1,2}
+
+quicksort({}) returns [] so it resolves, quicksort {1,2} attempts to return but must first find quicksort{2}
+Stack:main,console.log,Quicksort({3,1,2}),quicksort({1,2}),quicksort({2})
+Quicksort({3,1,2}) local variable:less={1,2}, equal={3}, greater={}, pivot=3;
+Quicksort({1,2}) local variable:less={},equal={1},greater={2},pivot=1
+heap: lis{3,1,2}
+
+Quicksort{2} sorts the elements into 3 lists then tries to return but first must evaluate (quicksort({}) 
+Stack:main,console.log,Quicksort({3,1,2}),quicksort({1,2}),quicksort({2}),quicksort({})
+Quicksort({3,1,2}) local variable:less={1,2}, equal={3}, greater={}, pivot=3;
+Quicksort({1,2}) local variable:less={},equal={1},greater={2},pivot=1
+Quicksort({2}) local variable: less={},equal={2},greater={},pivot=2
+heap: lis{3,1,2}
+
+Quicksort{} returns [] and Quicksort{2} continues its return but must evaluate (quicksort{})
+Stack:main,console.log,Quicksort({3,1,2}),quicksort({1,2}),quicksort({2}),quicksort({})
+Quicksort({3,1,2}) local variable:less={1,2}, equal={3}, greater={}, pivot=3;
+Quicksort({1,2}) local variable:less={},equal={1},greater={2},pivot=1
+Quicksort({2}) local variable: less={},equal={2},greater={},pivot=2
+heap: lis{3,1,2}
+
+Quicksort{} returns [] and Quicksort {2} is able to return [2]
+Stack:main,console.log,Quicksort({3,1,2}),quicksort({1,2})
+Quicksort({3,1,2}) local variable:less={1,2}, equal={3}, greater={}, pivot=3;
+Quicksort({1,2}) local variable:less={},equal={1},greater={2},pivot=1
+heap: lis{3,1,2}
+
+Quicksort{1,2} now returns [1,2]
+Stack:main,console.log,Quicksort({3,1,2})
+Quicksort({3,1,2}) local variable:less={1,2}, equal={3}, greater={}, pivot=3;
+heap: lis{3,1,2}
+
+Quicksort{3,1,2} attempts to return but must first return quicksort{}
+Stack:main,console.log,Quicksort({3,1,2}),quicksort({})
+Quicksort({3,1,2}) local variable:less={1,2}, equal={3}, greater={}, pivot=3;
+
+Quicksort({}) returns []
+Stack:main,console.log,Quicksort({3,1,2})
+Quicksort({3,1,2}) local variable:less={1,2}, equal={3}, greater={}, pivot=3;
+heap: lis{3,1,2}
+
+Quicksort({3,1,2}) can now return, with a value of [1,2,3]
+Stack:main,console.log
+heap: lis{3,1,2}
+
+The console logs the list and terminates
+Stack:main
+heap: lis{3,1,2}
+
+Main now terminates since there is nothing left to evaluate and nothing on the stack. Garbage collection deals with lis{3,1,2}
+Stack:
+heap:
+
+R1.3)
+I was able to demonstrate recursion similar to the model provided, but due to time constraints, and having picked a function which has many self calls,
+decided to use a text based model instead.
+

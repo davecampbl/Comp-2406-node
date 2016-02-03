@@ -1,0 +1,31 @@
+//
+   Created by King David on 02/12/2014.
+form(action="/", method="get")
+    button(type="submit") return to index
+li="Title: "+song.title
+    li="Composer: " +song.composer
+        li="Style: " +song.style
+            li="Key: "+song.key
+                li=text
+
+                    h3 Chords
+                        table()
+                            tr
+
+                            - var n = 0
+
+                            ul
+                                while n < song.bars.length
+                                    -var h=0
+                                    -var str=""
+
+                                    if(n%4==0)
+                                        tr
+                                    if(song.bars[n].leftdoubleBarLine)
+                                        td='||'+ song.bars[n].chords
+                                    else
+                                    td='|'+ song.bars[n].chords
+
+                                    -n++
+                                    ul
+                            ul

@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1= title
+  p #{description}
+  p Go to:
+  ul
+    each theExit in roomExits
+      li
+        a(href= theExit) #{theExit}
+  form(action="/quit", method="post")
+     button(type="submit") Quit

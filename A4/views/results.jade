@@ -1,0 +1,16 @@
+//
+   Created by King David on 02/12/2014.
+form(action="/", method="get")
+    button(type="submit") return to index
+p your results
+
+-var n=songs.length
+    li=n
+
+    each val, song in songs
+      li=songs[song].title
+          form(action="/findChords", method="post")
+
+              input(type="checkbox", name="song",value=songs[song].title,)
+              button(type="submit") find chords
+

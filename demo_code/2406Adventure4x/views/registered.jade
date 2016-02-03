@@ -1,0 +1,7 @@
+extends layout
+
+block content
+  h1 Registration Successful	
+  p You have successfully registered player #{playername}
+  form(action="/", method="get")
+        button(type="submit") Return

@@ -1,0 +1,627 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>2404</title>
+<style type="text/css">
+.arial {
+	font-family: Arial, Helvetica, sans-serif;
+}
+.courier {
+	font-family: Arial, Helvetica, sans-serif;
+}
+.red {
+	color: #F00;
+}
+
+.blue {
+	color: #00F;
+}
+.courier {
+	font-family: "Courier New", Courier, monospace;
+}
+.auto-style10 {font-size: medium;
+	font-style: italic;
+}
+.auto-style9 {font-size: medium;
+}
+.auto-style1 {	font-family: Arial, Helvetica, sans-serif;
+}
+.auto-style18 {	font-size: large;
+}
+.auto-style2 {	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+}
+.auto-style20 {	font-size: large;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.auto-style27 {	font-size: large;
+	font-weight: bold;
+}
+.auto-style29 {	font-size: large;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #FF0000;
+}
+</style>
+</head>
+
+<body class="arial">
+<h1 class="blue">Comp 2406 Fall 2014 Assignment 4 </h1>
+<h1 class="blue">The Song Remains The Same</h1>
+<h1 class="red">Due Date: Wed. Dec. 3 by 4:00pm <br />
+(plus a tutorial demo on Tue. Dec. 2)</h1>
+<h1></h1>
+<p class="red">Assignment Submissions Instructions: Assignments must be submitted via <a
+href="http://www.carleton.ca/culearn"><span class=SpellE>culearn</span></a> by the due date and time. Late assignments will not be accepted. You should submit all your code and related data files along with a detailed readme file to tell the TA how to setup and run your application.</p>
+<hr />
+<h2 class="red">Revisions:</h2>
+<p class="red" >rev3: I've removed requirement 3.14 since fermata's in music do not related directly to the chords.</p>
+<p class="red" >rev2: added beta2 parser to demo code</p>
+<p class="red" >rev1: added clarification about &quot;Y&quot; found in chart data. see table at bottom for assignment.</p>
+<hr />
+<p>In this assignment we will build a web application that uses a database. We will also get more practice doing  javascript string processing and node.js/express.js programming. The assignment requirements are fairly basic but you should feel free to embellish it much more if you want. This assignment is based on a real project and so we are very interested in the variety of solutions you come up with.</p>
+<p>We want you to contribute a web  application to a larger ongoing project that was started in one of our recent COMP 2404 C++ programming/C++ classes. In that course the students reverse-engineered a dataset from a  popular iPad app store app currently called: iRealPro. We want to build a web application and database to both search and view this content (music song chord charts) with a browser and also allow the user to edit existing songs or contribute new song data.</p>
+<p>In this assignment we want to pick up where the other students left off and parse their data file into a JSON mongodb database (or sqlite database if you prefer) and then write a server that will display the data for the user in the required format and also allow them to either contribute to, or modify, the data via the web pages.</p>
+<p class="red">Assignment Marking: </p>
+<p><font class="auto-style18" size="4"><span class="auto-style1">Marking: This assignment 
+is based on </span></font><span class="red"><font size="4">36</font></span><font class="auto-style18" size="4"><span class="auto-style1"> specific numbered design requirements numbered R1.1... R4.1 . (excluding R3.14) Two marks each and a 20 marks tutorial time demo for a total of </span></font><span class="red"><font size="4">72+20=92</font></span><font class="auto-style18" size="4"><span class="auto-style1"> marks.We will award 2 marks for those requirements that are met and well implemented, 1 mark for those only partly met or met but poorly implmented, and 0 marks for any requirement not met.</span></font> <span class="red">This assignment also has a show and tell demo on Tuesday Dec. 2 as part of your regular tutorial slot. At the tutorial demo we will want to see that most of the functionality has been implemented. The marking will be 20 marks for mostly done, 10 marks for about half done, 0 marks for no show or very little done.</span></p>
+<p>&nbsp;</p>
+<p class="red">This assignment may be done in pairs if you want to work with a partner.</p>
+<p><font class="auto-style18" size="4"><br class="auto-style1" />
+  <span class="auto-style1">In addition there are some 
+    general programming and good practice requirements that you must satisfy. These 
+    requirements are numbered R0.1, R0.2 .... Be prepared to lose marks if these 
+    requirements are not satisfied. If requirement R0.0 or R0.1 is not met the assignment grade will be 0.</span></font><font class="auto-style18" size="5"><br class="auto-style1" />
+      <span class="auto-style1">&nbsp;</span></font></p>
+<hr />
+<p><font size="+1"><big class="auto-style18" style="font-weight: bold;"> <span class="auto-style1">Good Programming and Good Practice Requirements.</span><br class="auto-style1" />
+  <br class="auto-style1" />
+  </big></font><span class="auto-style1"> <span class="auto-style18">The following requirements will&nbsp; pertain to all 
+    your assignments regardless of what your application is supposed to do (i.e. 
+    regardless of the design requirements). These requirements are to ensure that 
+    your code is readable and maintainable by other programmers (or readable by TA's 
+    in our case), and that your program adopts good practices. You will lose 5 marks from your total&nbsp; 
+    assignment mark for each of&nbsp; the following&nbsp; requirements that is not 
+    satisfied. If, however, you do not satisfy requirement R0.0 or R0.1 you will get 0 
+    for the assignment. </span></span><span class="auto-style18"><br class="auto-style1" />
+</span><span class="auto-style1"><span class="auto-style18">&nbsp;</span></span></p>
+<p><small><font color="#ff0000" size="+2"><small class="auto-style27"> <span class="auto-style1">R0.0) IMPORTANT Uniqueness Requirement. The solution 
+  and code you submit MUST be unique. That is, it cannot be a copy of, or be too 
+  similar to, someone else's code, or other code found elsewhere. A mark of 0 will 
+  be assigned to any assignment that is judged by the instructors or the TA's not 
+  to be unique. (You are free to use any code posted on our course web site as 
+  part of the course notes or example code.)</span><br class="auto-style1" />
+  <span class="auto-style1">&nbsp;</span></small></font></small></p>
+<p><span class="auto-style2"><font color="#ff0000"><span class="auto-style18"> R0.1) CODE ORGANIZATION AND COMPILATION: The TA's must  be able to compile and run your code to evaluate it. Though you are permitted to write code on Windows 8, Linux, or Mac OS. The code should be generic enough to be OS agnostic. Nevertheless, you must provide a ReadMe.txt file that says which OS you developed on and provide any necessary instruction on how to compile and run your code.</span></font></span><small><small><font class="auto-style27" color="#ff0000" size="4"><br class="auto-style1" />
+  <span class="auto-style1">&nbsp;</span></font></small></small></p>
+<p><font class="auto-style18" size="+1"><span class="auto-style1">R0.2) All of 
+  your variables, methods, functions, and classes should have meaningful names that reflect 
+  their purpose. Do not follow the convention common in math courses where they 
+  say things like: &quot;let x be the number of customers and let y be the number of 
+  products...&quot;. Instead call your variables <strong>numberOfCustomers</strong> or <strong>numberOfProducts</strong>. Your program should not have any variables 
+  called &quot;x&quot; unless there is a good reason for them to be called &quot;x&quot;. (One 
+  exception: It's OK to call simple for-loop counters i,j and k etc. when the 
+  context is clear.)</span><br class="auto-style1" />
+  <span class="auto-style1">&nbsp;</span></font></p>
+<p class="auto-style20">R0.3) Code Comment Requirements: Comments in your code 
+  must coincide with what the code actually does. It is a very common bug in 
+  industry for people to modify code and forget to modify the comments and so you 
+  end up with comments that say one thing and code that actually does another. By 
+  the way, try not to over-comment your code but instead choose good variable names 
+  and function names that make the code more &quot;self commenting&quot;.</p>
+<p class="auto-style20">&nbsp;</p>
+<p class="auto-style20">R0.3) Citation Requirements: If you use code from other sources you should cite the source in comments that appear with the code. It the source is an internet website then put the URL in the comments. You may draw on code from other sources but this may not form the complete solution you are handing in.</p>
+<p class="auto-style20"><br class="auto-style20" />
+  <span class="auto-style29">VERY IMPORTANT: Any 
+    sample code fragments provided may have bugs (although none are put 
+    there intentionally). It is part of your task to identify errors in the 
+    requirements and sample code.&nbsp; Please report errors so the can be fixed and an assignment 
+    revision noted.</span></p>
+<hr />
+<h2 class="blue">Background: What are Fake Books? </h2>
+<p>I<font size="+1">n a previous term 
+  the students started building a database to catalog the songs that appear in 
+  &quot;fake books&quot; used by musicians. Fake books have a long and colorful history. 
+  They were, in fact, one of the first real exploitations of, and pirating of, 
+  musicians and songwriters. Fake books were illegal song books sold to musicians 
+  but without royalty payments going to the authors and publishers of the songs. 
+  They were copyright violations. There was a thriving trade in illegal fake 
+  books involving organized crime mobs among others. Eventually certain 
+  publishers, notably Hal Leonard and Sher Music Co., obtained publishing rights to the songs and 
+  started publishing legal versions of the fake books, but this time called &quot;Real 
+  books&quot;. It is estimated that most, if not all, professional musicians own 
+  an least one Fake book and the vast majority own at least one illegal copy. The 
+  story of fake books is a colorful one. To learn more about them check out &quot;Fake 
+  books&quot; or &quot;Real Books&quot; on google and wikipedia. If you are really interested in 
+  this story check out Barry Kernfeld's book: &quot;The Story of Fake Books -<span id="btAsinTitle">Bootlegging 
+    Songs to Musicians</span>&quot; <a href="http://www.amazon.com/The-Story-Fake-Books-Bootlegging/dp/0810857278"> here</a>. Here is the amazon description of the book -it gives you an idea of 
+the story:</font></p>
+<p><span class="auto-style9">Fake books&#8212;anthologies of songs notated in a 
+  musical shorthand&#8212;have been used by countless pop and jazz musicians in both 
+  professional and amateur settings for more than half a century. </span> <span class="auto-style10">The Story of Fake Books: Bootlegging Songs to 
+    Musicians</span><span class="auto-style9"> traces the entertaining and 
+      previously unknown account of the origins of pop song fake books, which evolved 
+      through the bootlegging of a now obscure musical subscription service, the Tune-Dex. 
+      The book follows the history of fake books through their increased popularity 
+      among musicians to their prosecution by the government and the music industry, 
+      resulting in America's first full-blown federal trial for criminal copyright 
+      infringement. Through accounts given by jazz musicians Steve Swallow and Pat 
+      Metheny, </span><span class="auto-style10">The Story of Fake Books</span><span class="auto-style9"> also reveals the definitive history of the most popular fake book, one that has 
+        acquired a legendary status among jazz musicians: an anthology of jazz tunes 
+        called </span><span class="auto-style10">The Real Book</span><span class="auto-style9">. 
+          Drawing from information in FBI files, entertainment trade papers, and federal 
+          court records, author Barry Kernfeld presents pioneering research, which brings 
+          together aspects of pop music history and copyright law to disclose this 
+          predecessor of current-day battles over pop song piracy.</span></p>
+<h2 class="blue">&nbsp;</h2>
+<h2 class="blue">Background: What is iReal Pro (Formerly iRealBook, iRealB)?</h2>
+<p>iRealPro (orginally called iRealBook then iRealB) is a Apple iPad app that displays fake book chord charts in a simple format that works well on both an iPhone or iPad. Moreover, the app is able to transpose the charts and, in fact, play them by synthesizing audio tracks based on the user choosing a genre.  The iReal Pro app does not ship with songs, instead they area contributed voluntarily by a user community and posted on forums. Posting and distributing chord charts is not a copyright violation. Song melodies and lyrics can be copyrighted but chord progressions cannot. Also while it is illegal to copy works of art, it is not illegal to catalog them hence building a database of fake book chord charts is not a copyright violation.</p>
+<p>The  dataset provided by the COMpP 2404 students consists of a .txt file of  1200 songs encoded in &quot;proprietory&quot; format. Part of this assignment is to unravel, or parse, the  data file, build a database of <span class="courier">Song</span> objects, and provide a node.js or express.js server that can display the song data for the user in a nice chart-like format. We want the app to allow you to search for songs and either contribute new songs or edit existing songs. Very little is imposed on you in terms of code structure. This is your chance to &quot;go for it&quot;.</p>
+<p>Here is the starting portion of the data file <span class="courier">1200iRealBookJazz_rev2.txt</span> which is called 1200 because there are 1200 songs represented in this file.(Note a smaller <span class="courier">sample_songs.txt</span> file is also provided for initial testing until you are ready to try an handle the full file.)</p>
+<p>=26-2=Coltrane John=Medium Up Swing=F=n=*A[T44F^7 Ab7  |Db^7 E7  |A^7 C7  |C-7 F7  |Bb^7 Db7  |Gb^7 A7  |D-7 G7  |G-7 C7 ]*A[F^7 Ab7  |Db^7 E7  |A^7 C7  |C-7 F7  |Bb^7 Ab7  |Db^7 E7  |A^7 C7  |F^7   ]*B[C-7 F7  |E-7 A7  |D^7 F7  |Bb^7    |Eb-7    |Ab7    |Db^7    |G-7 C7 ]*A[F^7 Ab7  |Db^7 E7  |A^7 C7  |C-7 F7  |Bb^7 Ab7  |Db^7 E7  |A^7 C7  |F^7   Z=500 Miles High=Corea Chick=Bossa Nova=E-=n=[T44E-7    | x   |G-7    | x   |Bb^7    | x   |Bh7    |E7#9    |A-7    | x   |F#h7    | x   |F-7    | x Q  |C-7    | x   |B7#9    | x  Z        Y{QC-7    | x   |Ab^7    | x  }=502 Blues=Rowles Jimmy=Waltz=A-=n={T34A-7    |Db^7    |Bh7    |E7#9    |A-7    |Db^7    |Bh7    |E7#9    |C-7    |F7b9    |Bb^7    |Ab-7 Db7  |N1F#h7    |B7b9    |E^7#5    |E^7#5 E7 } |N2F#h7    |B7b9    |E-7    | x  Z=52nd Street Theme=Monk Thelonious=Up Tempo Swing=C=n={*AT44C A-7  |D-7 G7  |C A-7  |D-7 G7  |C A-7  |D-7 G7  |C G7  |C   }[*BC7,    | x   |F6    | x   |D7,    | x   |G7    | x  ][*AC, A-7  |D-7 G7  |C A-7  |D-7 G7  |C A-7  |D-7 G7  |C G7  |C   Z =9.20 Special=Warren Earl=Medium Swing=C=n={*AT44C9,    |Eb-6,    |C9,    |Eb-6    |Bb,    |sBb7,A7,Ab7,G7 |N1lC9, F#o7,  |C9, sAb7,G7}         |N2lC9, F#o7  |lC9, sF7,Bb][*BlBb,    |Eb, Eb6  |Eb6,    | x   |G9,    |F, F6,  |F9,    |  F7 ][*AC9,    |Eb-6,    |C9,    |Eb-6,    |Bb,    |sBb7,A7,Ab7,G7 |lC9, F#o7 , |sC6,F7,Bb,D9Z =A Felicidade=Jobim Antonio-Carlos=Bossa Nova=A-=n=*A{T44A-7(C^7)    | x   |C^7    | x   |E-7    |B7b9    |E-7 &lt;(Repeat Optional)&gt;A7  |D-7 G7 }[*BC^7    | x   |Bh7    |E7b9    |A-7    | x (Ab-7)  |G-7    |C7    |F^7    |D-7    |A-7    |D7    |A-7    |Bh7 E7b9  |A-7    |G7   ]*C[C^7  |F7  |C^7  |x  |G-7  |C7  |F^7  |x  |D-7  |G7  |C^7  |x  |F#h7  |B7b9  |sE-7,A7, |D-7,G7,]*D[lA-7    |A-7/G    |D7/F#    |D-7/F    |A-7    |Bh7 E7b9  |A-7    | x  Z =Ac-Cent-Tchu-Ate The Positive=Arlen Harold=Medium Swing=F=n={*AT44F^7 F+  |F6 F^7  |G-7    |C7    | |F^7 F+  |F6 F^7  |G-7 C7  |F6 C7 }[*BF6    |F7    |Bb^7 sG-7,C7, |lF6 C7  |F6    |D7b9    |G7#5    |C7   ][*AF^7 F+  |F6 F^7  |G-7    |C7    | |F^7 F+  |F6 F^7  |G-7 C7,  |F6 C7 Z =Across The Valley From The Alamo=Greene Joe=Medium Swing=F=n={*AT44F^7,    | x   | x   | x   |C7,    | x   |N1G-7, C7,  |F^7,   }         |N2G-7, C7,  |F^7,   ]Y[*BBb^7,    |F^7,    |Bb^7, Bb-7,  |F^7,    |A7,    |D-7, G7,  |G7,    |C7,   ]Y[*AF^7,    | x   | x   | x   |C7,    | x   |G-7, C7,  |F^7   Z </p>
+<p>Here is what the first three songs look like viewed in the iReal Pro app on the Apple iPad (screen captures). There are additional screen captures in the &quot;images&quot; directory associated with this assignment and more will be added if the need arises while working on the assignment.</p>
+<p><img src="images/26-2.png" width="966" height="1332" alt="26-2" /></p>
+<p>&nbsp;</p>
+<p><img src="images/500 Miles High.png" width="1007" height="1498" alt="500" /></p>
+<p>&nbsp;</p>
+<p><img src="images/502 Blues.png" width="981" height="1336" alt="502 Blues" /></p>
+<p>As you can see above it is not hard to see how the datafile represents the chart. (At the bottom of this assignment is a large table that shows everything we know so far about what characters in the data file mean.)</p>
+<p>We want your server to display chord charts as web pages for the user and have them look &quot;similar&quot; to those in the screen captures. What we mean by similar will be clarified in the specific requirements.</p>
+<p>&nbsp;</p>
+<h2 class="blue">Design Requirements </h2>
+<h2 class="blue">Part 1) Parsing The Song Data and Building a Database.</h2>
+<p>The demo code provided with this assignment and with Tutorial 08 provides a start of a parser that will break the datafile into songs with individual properties for their: title, composer, style, musical key etc. The demo parser, however, currently treats the song data as one big &quot;chunk&quot;. We want you to complete this parsing code and break the songs up further into individual bars and add properties to those bars based on what the data means. At the bottom of this assignment is a large chart that shows what we know about what the data means. This chart was created by the students in a previous course when they were trying to figure out what the datafile represented. </p>
+<p>Here is a sample of what a parse of the first song might look like. (It is from the provided file: <span class="courier">sampleJSONparse.txt</span> but be aware this was generated by hand so might have a mistake -if so please point it out so it can be corrected.)</p>
+<pre>
+{
+   title: "26-2",
+   composer: "John Coltrane",
+   musicalStyle: "Medium Up Swing",
+   key: "F",
+      bars: [
+      {
+         timeSignature: "4/4",
+         rehearsalLetter: "A",
+         leftDoubleBarLine: "true",
+         chords: "Fmaj7 / Ab7",
+      },
+      {
+          chords: "Dbmaj7 / E7",
+      },
+      {
+             chords: "Amaj7 / C7",
+      },
+      {
+            chords: "Cm7 / F7",
+      },
+       {
+            chords: "Bbmaj7 / Db7",
+       },
+      {
+            chords: "Gbmaj7 / A7",
+       },
+      {
+             chords: "Dm7 / G7",
+       },
+      {
+          rightDoubleBarLine: "true",
+             chords: "Gm7 / C7",
+      },
+      {
+         rehearsalLetter: "A",
+         leftDoubleBarLine: "true",
+         chords: "Fmaj7 / Ab7",
+      },
+      {
+          chords: "Dbmaj7 / E7",
+       },
+      {
+         chords: "Amaj7 / C7",
+      },
+      {
+         chords: "Cm7 / F7",
+       },
+       {
+            chords: "Bbmaj7 / Ab7",
+       },
+      {
+             chords: "Dbmaj7 / E7",
+      },
+      {
+             chords: "Amaj7 / C7",
+      },
+      {
+         rightDoubleBarLine: "true",
+         chords: "Fmaj7",
+      },
+      {
+         rehearsalLetter: "B",
+         leftDoubleBarLine: "true",
+         chords: "Cm7 / F7",
+       },
+      {
+         chords: "Em7 / A7",
+      },
+      {
+         chords: "Dmaj7 / F7",
+      },
+      {
+         chords: "Bbmaj7",
+      },
+      {
+         chords: "Ebm7",
+      },
+      {
+         chords: "Ab7",
+      },
+      {
+         chords: "Dbmaj7",
+      },
+      {
+         rightDoubleBarLine: "true",
+         chords: "Gm7 / C7",
+      },
+       {
+         rehearsalLetter: "A",
+         leftDoubleBarLine: "true",
+         chords: "Fmaj7 / Ab",
+      },
+      {
+         chords: "Dbmaj7 / E7",
+      },
+      {
+         chords: "Amaj7 / C7",
+      },
+      {
+         chords: "Cm7 / F7",
+     },
+      {
+             chords: "Dbmaj7 / Ab7",
+      },
+      {
+            chords: "Dbmaj7 / E7",
+      },
+      {
+           chords: "Amaj7 / C7",
+      },
+      {
+         finalBarLine: "true",
+         chords: "Fmaj7",
+       }
+      ]
+}
+</pre>
+<p class="red">Note it is not expected that you already know what all the musical symbols mean. It is meant that you ask lots of questions in class and learn about what the data means. Programmers are rarely experts in the domain for which they are asked to write programs. They have to ask all the questions that are necessary to clarify what is required.</p>
+<p> R1.1) Your app that parses the datafile should be either an express version 4.x application or just a plain node.js application (Don't use express 3.x).</p>
+<p>R1.2) Your app should successfully parses the main intended data file, currently: <span class="courier">1200iRealBookJazz_rev2.txt</span> but your app should be prepared to parse any file in a similar format. (A smaller <span class="courier">sampleSongs.txt</span> file is provided to start with as well)</p>
+<p>R1.3) You should parse the data into song objects that have indivdual bars. Each bar should contain properties that pertain to that bar such as: the chords, bar lines, repeat symbols, first and second endings etc. The chart at the bottom of this assignment indicates what is currently known about what the data represents. </p>
+<p>R1.4) Your parse should make distinct properites for the single and double bar lines, left and right repeat bar lines, and a final bar line. </p>
+<p>R1.5) Your parse should add distinct properties to bars that represent first, second, third endings.</p>
+<p>R1.6) Your parse should have a chords property per bar that contains all the chords of a particular bar. (You do not need to break the chords up any further). </p>
+<p>R1.7) You parse should correcty identify the time signature of each song and account for the possiblity that the time signature might change during the song.</p>
+<p>R1.8) Your parse should add attributes to bars that represent a coda, go to coda, or a del segno sign navigation symbols</p>
+<p>R1.9) Your parse should add attributes to bars that represent rehearsal letters or (section letters as they are also called). (see table below)</p>
+<p>R1.10) Your parse should correctly capture single measure repeats, double measure repeats, and bars that have no chords (nc in the data).</p>
+<p>You are required to put the results of your parse in a database to be accessed by your web server. It is expected that you will be using a mongodb JSON database and the requirements are written as such. If any of you however prefer to use an SQLite database instead that would also be acceptable. If you have no previous experience with SQL databases I suggest you stick with the MongoDB JSON database.</p>
+<p>Note you can build a separate app to parse the datafile and build the database or you can make that part of your server when it launches. I suggest building a separate app since that will probably be easier.</p>
+<p>R1.11) Your database should be a collection of individual song objects. </p>
+<p>R1.12) Your song objects in the database should have individual bar objects to represent each bar of the song.</p>
+<p>R1.13) Your database should be accessible using the databases default command client e.g. mongo.exe.</p>
+<h2 class="blue">Part 2) Chart Search Requirements.</h2>
+<p>When your server is launched the user should able to access the chart data by visiting http://localhost:3000. The user should be presented with a screen where they can search for songs according to the following requirements.</p>
+<p>R2.1) Your chart display server should be either an Express.js version 4.x application or a plain Node.js application. (Don't use Express.js version 3.x)</p>
+<p>R2.2) The user should be able to enter a sequence of words and then initiate a search by, for example, clicking a &quot;search&quot; button.</p>
+<p>R2.3) It the user enters, for example, &quot;Ipanema&quot;  your app should find all songs whose title contains the substring &quot;Ipanema&quot;.</p>
+<p>R2.4) If the user enters several words like &quot;April Spring Love&quot; then your app should find all songs that have all the words as substrings regardless of the order in which there words appear in the title.</p>
+<p>R2.5) If the user leaves supplies no keywords then all songs should be found but subject to the requirement below.</p>
+<p>R2.6) If the user searches for songs you need only dissplay the first dozen that match. That is, you can limit the number of results shown for the user even though there might be more that match.</p>
+<p>R2.7) When the search results are shown to the user they should be able to click on one of the search results and the app should then display the chord chart consistent with the display requirements below.</p>
+<p>R2.8) When the user has finished looking at a chord chart display they should be able to go back to the search part of the website.</p>
+<p>&nbsp;</p>
+<h2 class="blue">Part 3) Chart Display Requirements.</h2>
+<p>The user should be able to choose one of the songs found by searching and the song should be displayed consistent with the following requirements. Note we have purposely worded these requirements so that the bars of a song can be displayed as two lines of simple text. Recall from one of your earliest tutorials we parsed data and displayed chords symbols above lyrics. The same can be done here with chords shown on the main line and some special symbols shown above the chords.</p>
+<p>Although we have purposely worded things you would could just use simple text and meet all the requirements we encourage you to make your display more fancy and meaningful using whatever techniques you choose to investigate. You might wish to user the richer graphic capabilities of HTML5. You could also use forms if you like. The choice is yours and depends on what you are comfortable with and how much you want to explore. We are hoping to see a variety of solutions.</p>
+<p>(One of our COMP 3005 students this term has built a prototype Java chart viewer based on an XML parse of the song data. I've inlcuded it with the demo code. You should be able to run it as a double-clickable java app. You can use it for ideas on how your web page might display the chart. The java exectable is called <span class="courier">AnthonysChartViewer.jar</span> and the accompanying data file is called <span class="courier">songs.xml</span>. Use this app to see how some of the charts looks. Be aware however that there are some errors in the <span class="courier">songs.xml</span> file as a result of the code used to parse your song data file into XML)</p>
+<p>Here is what a simple display for the first song might look like (you can ignore the drop down menu associated with the key -it is not part of this assignment):</p>
+<p><img src="images/display.png" width="918" height="716" alt="display" /></p>
+<p>&nbsp;</p>
+<p>R3.1) Your chart should be displayed with music bar lines aligned vertically similar to the screen captures of the ipad app or the image above.</p>
+<p>R3.2) Charts should be displayed with 4 music bars per line. In some cases partial sections could have fewer bars. See &quot;500 Miles High&quot; output example. </p>
+<p>R3.3) The chords should be shown for each bar. Ideally your chart should be displayed with chord symbols aligned vertically as much as possible. Also, ideally, chords in brackets are meant as alternative chords and are typically shown above the main chords. (Note when we say ideally we mean it would be nice to have but you will not be penalized if it is not so.)</p>
+<p>R3.4) All time signatures found in the data file should be supported and displayed with the appropriate bar of the song. E.g four four time, denoted <span class="courier">T44</span> in the data, could appear as <span class="courier">4/4</span> on the  output. <span>The charts can change time signatures during the tune. See &quot;Conference of The Birds&quot;.</span> Note that some charts might not have time signature data in which case T44 or four-four time is assumed.</p>
+<p>R3.5) All rehearsal letters must be supported and shown with or above the bar they pertain to. These should appear as [A] [B] in your chart (that is, in square brackets). Ideally the rehearsal letters should appear above the bar they pertain to.</p>
+<p>R3.6) Repeat symbols and double bar lines should be supported. double bar lines should appear as ||  in your chart output and left and right repeat barlines should be shown as <span class="courier">|:</span> and <span class="courier">:|</span>. A final bar line should be shown as || two single bar lines. (ideally a thin line and a thick line).</p>
+<p>R3.7) One bar repeats should be supported and use the <span class="courier">%</span> character in the chart. These should be drawn near the middle of the music bar. See &quot;500 Miles High&quot; example. Also two bar repeats should be handled (e.g. &quot;Flintstones&quot;). Ideally you should handle two measure repeats as well.</p>
+<p>R3.8) First, second, and third endings etc. found in the chart should be supported. and use something like &quot;(1.&quot; and &quot;(2.&quot; etc. to represent them. Ideally these would appear on the line above the bar (e.g. &quot;502 Blues&quot;)</p>
+<p>R3.9) Sign (Del Segno) and Coda should be supported and use $ for sign and @ for coda in your console output. Ideally Sign and Coda should appear on the line above the bar it applies to.</p>
+<p>R3.10) The title, author, and any other related information should appear on your chart output in a consistent format. Include the musical key as part of your output even though it does not appear on the iPad screen captures.</p>
+<p>R3.11) Slash marks that appear within the chords should be supported. They appear in the context of slash chords (e.g. Georgia On My Mind) and in the context of indicating beats in a bar for placing chords (e.g. Dolores). [rev2]</p>
+<p>R3.12) Text above bars which appear in data within &lt;&gt; brackets. See entry in chart below. Example &quot;D.C. al 3rd end.&quot; on &quot;And The Angels Sing&quot; chart.</p>
+<p>R3.13) Alternate chords. Appear as chords in () brackets in data. Should be shown as chords in () brackets above bar in console output. See example chart: &quot;Almost Like Being In Love&quot;.</p>
+<p><span class="red">Rev 3: </span><s>R3.14) Should handle the fermata symbol that shows up as an &quot;f&quot; in data. See chart below.</s></p>
+<p>R3.15) Should handle N.C. &quot;no chord&quot; that shows up a &quot;n&quot; in data. See chart below and &quot;Butterfly&quot;.</p>
+<p class="red"></p>
+<h2 class="blue">Part 4) Chart Editing or Uploading.</h2>
+<p>You need to provide either the ability to upload a new song file to add to existing data or provide a way to edit an existing song. Uploading would be much easier then editing. Implement either requirement A or B below.</p>
+<p>R4.1A) Provide the user a way to upload a file via their browser. Most form demos in books and tutorials show you how you can upload a file. You need to then parse that file and add it to the songs in your current database. After the upload if the user again searches the database for songs they should find the new song or songs they have uploaded.</p>
+<p>R4.1B) Provide an edit button and when the user clicks on the edit button the songs is presented in a form. Then user should then be able to edit the contents of individual fields and click a save button to have the server modifiy the song in the database. When the user again searches for, and displays, songs the edits should be in effect.<span class="red"></span></p>
+<p class="red"></p>
+<p class="red"></p>
+<h2 class="blue">Table of Data Symbols.</h2>
+<p>Below is a  summary chart of the data mapping discovered by the students from the previous course that produced the data file. You should  fill in, and expanding, this table as you discover more about the data. This table suggests possible display symbols, comments and provides an opportunity to cross reference itemized requirement numbers. There is a column intended to cross reference requirements. Fill in the requirement numbers that pertain to the rows if you find that helpful. <span class="red">Expect this table might change and mature as you are working on the assignment and we collectively discover more about the data</span>.</p>
+<table width="1088" border="1" cellpadding="5">
+  <caption>
+    Chart Display Mapping Requirements
+  </caption>
+  <tr>
+    <th width="116" scope="col">Reqs<br />
+    cross-ref</th>
+    <th width="238" scope="col">Data File Symbol</th>
+    <th width="100" scope="col">Possible web Page Display Symbol</th>
+    <th width="204" scope="col">Comment</th>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>=</td>
+    <td>&nbsp;</td>
+
+    <td><p>delimits start of song<br />
+      title,author..</p>
+    <p>Use this to switch parsing modes</p></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>|</td>
+    <td>|</td>
+    <td>bar line<br />
+      must be vertically aligned in display</td>
+  </tr>
+    <tr>
+    <td>&nbsp;</td>
+    <td>{ ... }</td>
+    <td>|: ... :|</td>
+    <td>left and right repeat bar lines<br />
+      e.g. &quot;500 Miles High&quot;</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>T44 //four four time<br />
+    T34 //three four time</td>
+    <td>4/4<br />
+    3/4</td>
+    <td><p>Time signature</p>
+    <p>Appears at start of first bar</p>
+    <p>note time signatures can change during the tune. See &quot;Conference Of The Birds&quot;</p>
+    <p>Songs without time signatures are assumed to be in T44 time</p></td>
+  </tr>
+  <tr>
+    <td><p>&nbsp;</p>
+    <p>&nbsp;</p></td>
+    <td><p>[...]</p>
+    <p>*A[...] *B[...]</p>
+    <p>*i</p></td>
+    <td><p>Double bar lines</p>
+      <p>|| ... ||</p>
+      <p>Rehearsal letters</p>
+      <p>[A]<br />
+        || ... ||</p>
+    <p> [B]<br />
+      || ... ||
+    </p>
+    <p>[intro]</p></td>
+     <td><p>Sections or sections with rehersal letters.<br />
+      Usually appear as double bar lines on a chart, we will use square brackets instead like the data file.
+      </p>
+      <p><br />
+        See: &quot;26-2&quot;, &quot;Benny's Tune&quot;<br />
+    </p></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>Z</td>
+    <td><p>||</p>
+    <p>(meant to be one thin line and one thick line)</p></td>
+    <td><p>Final Bar<br />
+    use double | on console display</p>
+    <p>All charts appear to end with a Z</p></td>
+  </tr>
+    <tr>
+    <td>&nbsp;</td>
+    <td>Y</td>
+    <td class="red">&nbsp;</td>
+    <td><p class="red">rev1: Seems to indicate leaving a blank line on the chart display. Maybe to make sections stand out or be more separated. You can ignore this in the data.</p></td>
+  </tr>
+  <tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>| x |</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>| &nbsp;  r&nbsp; |   &nbsp;&nbsp;  |</p></td>
+    <td><p>One measure repeat</p>
+      <p>|&nbsp;&nbsp; % &nbsp;&nbsp;|</p>
+    <p>&nbsp;</p>
+    <p>Two measure repeat</p>
+    <p>| &nbsp;  R|    &nbsp;&nbsp;  |</p>
+    <p>or</p>
+    <p>| &nbsp;%2 |    &nbsp;&nbsp;  |</p></td>
+
+    <td><p>Single bar repeat Display in middle of bar. <br />
+      See 500 Miles High</p>
+      <p>Two bar repeat: % on either side, and right up against, middle bar line. e.g. &quot;Flintstones&quot;</p></td>
+  </tr>
+    <tr>
+    <td>&nbsp;</td>
+    <td><p>Q //coda symbol</p>
+      <p>S //del segno symbol</p></td>
+    <td><p>@</p>
+      <p>$</p></td>
+
+    <td><p>Coda Symbol<br />
+    should appear on line above the bar it applies to.<br />
+    </p>
+      <p>See: &quot;500 Miles High&quot;</p>
+      <p>see: &quot;Butterfly&quot;</p></td>
+  </tr>  
+  <tr>
+    <td>&nbsp;</td>
+    <td>N1 //first ending<br />
+      N2      //second ending</td>
+    <td>(1.<br />
+    (2.</td>
+
+    <td><p>Should appear on line above the bar it applies to.</p>
+    <p>See: 502 Blues</p></td>
+  </tr>
+    <tr>
+    <td>&nbsp;</td>
+    <td><p>Chord Root (Note) Names<br />
+      A<br />
+      A#,Bb<br />
+      B<br />
+    C<br />
+    C#,Db<br />
+    D<br />
+    D#,Eb<br />
+    E<br />
+    F<br />
+    F#,Gb<br />
+    G<br />
+    G#,Ab
+    </p></td>
+    <td>Chord Root Names<br />
+A<br />
+A#,Bb<br />
+B<br />
+C<br />
+C#,Db<br />
+D<br />
+D#,Eb<br />
+E<br />
+F<br />
+F#,Gb<br />
+G<br />
+G#,Ab </td>
+    <td>&nbsp;</td>
+  </tr>
+    <tr>
+    <td>&nbsp;</td>
+    <td>#, b</td>
+    <td>#, b</td>
+    <td>Sharps and flats</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td><p>Chord Symbols<br />
+    A^7 <br />
+    A-7 <br />
+    A7
+    <br />
+    F#o7 
+    <br />
+    A7alt
+    <br />
+    Dh7
+    </p>
+    <p class="red">Note: on some charts chords appear to be separated by commas rather than spaces. You need to account for this when you parse the chart [rev 5]</p></td>
+    <td><p><br />
+      A^7<br />
+      A-7 or Am7<br />
+    A7<br />
+    F#o7<br />
+    A7alt
+    <br />
+    D07
+    <br />
+    </p></td>
+ 
+    <td><p>Chords<br />
+      A major 7 chord<br />
+      A minor 7 chord<br />
+      A 7th chord<br />
+      F# diminished chord <br />
+    Altered Chord<br />
+    Half Diminished Chord
+    </p></td>
+  </tr>
+
+
+  <tr>
+    <td>&nbsp;</td>
+    <td><p>|ppD7  |</p>
+    <p>|D- D-/C  |</p></td>
+    <td><p>| / / D7|</p>
+    <p>|D- D-/C |</p></td>
+
+    <td><p>e.g. &quot;Dolores&quot;</p>
+    <p>e.g. &quot;Georgia On My Mind&quot;</p></td>
+  </tr>
+  <tr>
+    <td><p>&nbsp;</p>
+    <p>&nbsp;</p></td>
+    <td><p>&lt;D.C. al 3rd end.&gt;</p>
+    <p>&lt;open for solos&gt;</p>
+    <p>{*B&lt;*68  Solos:&gt;Bb7    |</p>
+    <p>&lt;*501st x slow, doubl<br />
+    e time on repeat.&gt;</p></td>
+    <td><p>&quot;D.C. al 3rd end&quot; shown above the bar</p>
+    <p>others below the bar</p></td>
+
+    <td><p>e.g. &quot;And The Angels Sing&quot;</p>
+    <p>e.g. &quot;Beauty and The Beast&quot;</p>
+    <p>e.g. &quot;Blues March&quot;</p>
+    <p>e.g. &quot;Brilliant Corners&quot;</p>
+    <p class="red">Note there seems to be some kind of *50 (* with number being used, but we are not sure yet what that means. If anyone figures it out let me know so I can update these requirements more</p></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td><p>C7(Eb-7)  (Ab7)<br />
+      G-7(Ebo7) C9(C9/E)<br />
+    </p></td>
+    <td><p>(Eb-7)  (Ab7)</p>
+    <p>chords in brackets above the bar</p></td>
+ 
+    <td><p>Alternate chords</p>
+      <p>&quot;Almost Like Being In Love&quot;<br />
+    &quot;At Long Last Love&quot;</p></td>
+  </tr>
+    <tr>
+    <td>&nbsp;</td>
+    <td><p>|fA6     |<br />
+    </p></td>
+    <td><p>~ </p>
+      <p>shown above bar, above chord that it applies to</p></td>
+
+    <td><p>Fermata Symbol</p>
+      <p>See &quot; Best is Yet To Come (Page 2)&quot;</p>
+      <p class="red">Rev 3: Ignore for this assignment</p></td>
+  </tr>
+    <tr>
+    <td>&nbsp;</td>
+    <td><p>|  n     |<br />
+    </p></td>
+    <td><p>N.C. </p>
+      <p>No chord.
+      shown as N.C. chord</p></td>
+
+    <td><p>Specfies &quot;No Chord&quot;.</p>
+      <p>The bar has no specific chord</p>
+      <p>See &quot; Butterfly&quot;</p></td>
+  </tr>
+    <tr>
+    <td>&nbsp;</td>
+    <td><p>some bars have the following letters among there chords: &quot;l&quot;, &quot;s&quot;, &quot;U&quot;.</p>
+      <p>These are articulation data meant to help in generating sound playback. You can ignore these or delete them in your application<br />
+      </p></td>
+    <td><p>not used in this assignment</p></td>
+
+    <td><p>&nbsp;</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<h2 class="blue">&nbsp;</h2>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+
+</body>
+</html>

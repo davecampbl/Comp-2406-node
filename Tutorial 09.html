@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>COMP2501 - Tutorial 1</title>
+<link href="template.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<p class="header">COMP 2406 - Fall 2014 Tutorial #9</p>
+<p class="header subheader">MongoDB and the Adventure Game Demo</p>
+<hr/>
+<p>&copy; L.D. Nel 2014</p>
+<hr />
+<p class="red">Revisions</p>
+<p class="red">&nbsp;</p>
+<hr />
+<p class="segment-header">Description:</p>
+<p>The purpose of this tutorial is to have you fix a problem in the demonstration code that relates to asynchronous function calls in node.js and express.js. Also to become familiar with code that embodies most of the concepts we have discussed in the course so far.</p>
+<p>The main task is for you to become familar with the complete code of the adventure game demo from last term and correct a defect in the current version that resulted from an attempt to move the code from running on Express 3.x to running on Express 4.x. The defect results from the asynchronous function calls used to set up the routes.</p>
+<p>This tutorial involves probably the most elaborate piece of code seen so far in tutorials: the adventure game demo code. It makes use of everything we have discussed in the course so far: node.js, express.js, cookies and sessions, mongodb, redirect programming pattern, jade, and also contains an example of encrypting passwords by hashing them with a bcrypt-nodejs module. So part of the purpose of the tutorial is for you to really get to know all of this code. You will definitely have to do this as homework as there is too much code to just learn at the tutorial.</p>
+<p class="red">IMPORTANT: This tutorial is meant as a homework assignment and for you to demonstrate your results at your tutorial session. You will not be able to complete it if you only start when you come to the tutorial. You will need to read about and learn those aspects of javascript that pertain to this tutorial on your own and come up with a strategy to solve the problems.</p>
+<p>To get credit for the tutorial you must complete, or make significant progress on, the exercise problems provided and demonstrate your results to the tutorial TA before you leave the tutorial.<br />
+</p>
+<hr/>
+<p class="segment-header">Instructions:<br />
+</p>
+<p class="segment-header">&nbsp;</p>
+<p class="segment-header"><span class="black-bold">Problem 1: Preliminary</span></p>
+<p>First we will demonstrate for review  a basic issue with asynchronous function calls.</p>
+<p>Run the <span class="code">song parser 01A_parse_songs.js</span> node application. It should produce an <span class="code">output.txt</span> file in the <span class="code">songs</span> directory.</p>
+<p>Now we want to read in the data from the <span class="code">songs/output.txt</span> file. We have provided two applications to do that: <span class="code">01B_read_JSONsongs.js</span> and <span class="code">01C_read_JSONsongsWRONG.js</span>. Try them both out.</p>
+<p>Here is the correct version:</p>
+<pre>
+  var fs = require('fs'); 
+
+  var inputFilePath = "songs/output.txt";
+
+  fs.readFile(inputFilePath , 'utf8', function(err, data){
+    console.log('now running callback function');
+    if(err) console.log('FILE RE-READ ERROR');
+    var fileData = JSON.parse(data);
+    console.log('the data from: ' + inputFilePath );
+    console.log(fileData.songs[0]);
+  });
+</pre>
+<p>Here is the wrong version:</p>
+<pre>
+var fs = require('fs'); 
+var inputFilePath = "songs/output.txt";
+
+fs.readFile(inputFilePath, 'utf8', function(err, data){
+    console.log('now running callback function');
+    if(err) console.log('FILE RE-READ ERROR');
+    var fileData = JSON.parse(data);
+  });
+
+console.log('the data from: ' + inputFilePath );
+console.log(fileData.songs[0]);
+</pre>
+<p>Can you see what is wrong? Basically in the wrong version the callback function will run after the attempt to output the results. That is because the callback function runs asynchronously only AFTER the file contents have been read whereas the output statements run synchronously right after the call to readFile() returns. Remember the call to readFile() returns right away, but its callback function only gets called after the file contents have been read &quot;in the background&quot;.  </p>
+<p>In the correct version, the output is done as part of the callback function and so does not depend on when the callback runs relative to the other statements. It is really easy for us to accidently write the wrong version because we are so used to the idea the statements that appear later in the code will in fact run later -but that only works when all the calls are all synchronous.</p>
+<p>This basic issue illustrated here is what is wrong with the adventure demo code that we want you to fix as the main task in this tutorial.</p>
+<p>&nbsp;</p>
+<p class="segment-header"><span class="black-bold">Problem 2) Setting Up MongoDB Adventure Database</span></p>
+<p>This tutorial provides 2 versions of Anil Somoyaji's Adventure game demo from last year: an Express 3.x version and an Express 4.x version. The Express 3.x version is basically the code from last year except I have replaced the bcrypt module with bcrypt-nodejs module instead so that I will run accross all platforms without the need for native tools (like requiring visual studio and python on Window's machines). </p>
+<p>In this tutorial you will be working with the Express 4.x version but trying to fix a problem that results from porting the Express 3.x version to Express 4.x. Because of this we are including the Express 3.x version for reference so you can see how that code worked.</p>
+<p>Before you can run the adventure game demo you need to set up the MongoDB database that includes the game rooms. Do that as follows:</p>
+<p>1) Open a command line prompt window start up the mongodb database as you did in the last tutorial by executing something like: (Remember to set up a data/db directory for mongodb.) </p>
+<p class="code">c:\mongodb2_6_5\bin\mongod.exe -dbpath c:\mongodb2_6_5\data\db</p>
+<p>2) Open a new command line window. <span class="red">(IMPORTANT: open a new CMD window, don't try and use the one that was used to start the server -it won't work)</span> Start the mongo command line client by executing something like:</p>
+<p class="code">c:\mongodb2_6_5\bin\mongo.exe</p>
+<p>3) Now open yet another command window on the <span class="code">2406Adventure4x</span> express application folder.</p>
+<p>Create your node_modules directory by install all the required modules specified by <span class="code">package.json</span> by executing:</p>
+<p class="code">npm install</p>
+<p>(Note I got some warnings on some machines when doing the install but not on others. The code still ran despite the warnings. If anyone figures out where the warnings are coming from please let me know.)</p>
+<p>Run the <span class="code">storeRooms.js</span> node application that sets up the database.</p>
+<p class="code">node storeRooms.js</p>
+<p>Use the <span class="code">mongo</span> console client to confirm that your database is in fact set up before you go on to the next problem.</p>
+<p>&nbsp;</p>
+<p class="segment-header"><span class="black-bold">Problem 3)</span></p>
+<p>With the database set up you should be able to run the express 4x adventure game application: <span class="code">app.js</span>.</p>
+<p class="code">node app.js</p>
+<p>It should start the game server.</p>
+<p>Now to play the game open a browser and visit:</p>
+<p class="code">https://localhost:3000</p>
+<p>(Note this site uses <span class="code">https</span> not <span class="code">http</span>). It should present you with a screen where you can register a new user:</p>
+<p><img src="images/problem3-1.png" alt="problem3-1" /></p>
+<p>&nbsp; </p>
+<p>Once registered you can log in, start the game and go from room to room by clicking the appropriate links. (Notice in the screen capture below how the room is appearing as part of the browser URL. That is, there are routes for the individual rooms.)</p>
+<p>&nbsp;</p>
+<p><img src="images/problem3-2.png" width="1054" height="432" alt="problem3-2" /></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Try it and become familiar with the code. Use the mongo client to see what effect this is having on your adventure-demo database. Try adding another user. If you are on Internet Explorer try accessing from Firefox to represent different session client.</p>
+<p>Look at the code and become familiar with how it works.</p>
+<p>Now we are ready to fix a problem in this code. The code uses routes that represent the specific rooms. That is, when a user clicks on a room they want to visit the code re-directs the browser to a URL like: localhost:3000/sickbay.</p>
+<p>In the express 3.x code the routes like app.get('/sickbay', function(){}) could be set up in any order, or asynchronously, because they are applied where the app.use(app.router); statement appears in the code. That is, routes can be set up asynchronously anywhere because they are deamed to be &quot;located&quot; where the app.use(app.router) statement appears.</p>
+<p>But express 4.x has done away with the <span class="code">app.use(router)</span> alltogether and instead routes like <span class="code">app.get('/sickbay', function(){})</span> are deemed to be in the order in which they are actually created. This creates a real problem because if the routes for the rooms are set up asynchronously -as they are in the express 3.x code they will like be in the wrong order and not work. To temporarly overcome this we have hard-coded the room routes in the express 4.x app and commented out where these routes were being created from the database. Your task here is to fix this and remove the hard-code &quot;band-aid&quot; solution.</p>
+<p>There is no specific intened solution. In fact, we are very interested in the different solutions you come up with and hope to post several of your approaches. Here are some of the possible strategies you can use to try and fix this code:</p>
+<p>1) Use synchronous versions of that code that is currently asychronous.</p>
+<p>2) Do all with work of setting up routes within the same asynchrounous function.</p>
+<p>3) Use only one route like /visitrooms and use a query parameter to specify the room.</p>
+<p>4) Use parameterized routes like app.get('/visit/:theroom', function(...){})</p>
+<p>5) Don't try to specify the room with the route but instead dig it out of the request object or the session/cookie associated with the app.</p>
+<p>6) Some other solution. There are many possible ways to try and solve this problem.</p>
+<p>&nbsp;</p>
+<p class="segment-header"><span class="black-bold">Problem 4) Adding Another Room</span></p>
+<p>Finally demonstrate your code by adding another room to the database and showing that your application can use it (without requiring modification of the app.js code.)</p>
+<p>&nbsp;</p>
+<p class="red">When you have completed these exercises show your results to the TA's to get credit for the tutorial.</p>
+<p>&nbsp;</p>
+
+</body>
+</html>

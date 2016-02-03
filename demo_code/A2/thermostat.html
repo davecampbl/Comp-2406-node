@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Thermostat Controls</title>
+
+</head>
+<body>
+<b>Thermostat Controls</b>
+<p id="furnstatus">Thermostat Status:</p>
+<p id="curtemp">Current Temperature:</p>
+<p id="tempset">Temperature Setting:</p>
+<p id="hysteresis">Hysteresis Setting:</p>
+<button type="changetemp">Change temperature.</button>
+<p id="hyst">Temperature change to turn furnace off/on:</p>
+<button type="changehys">Change maximum temperature.</button>
+<p>Outdoor Temperature:</p>
+<button type="getoutsidetemp">Update temperature information.</button>
+<script type="text/javascript">
+    var getJSON = function(url) {
+        return new Promise(function(resolve, reject) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('get', url, true);
+            xhr.responseType = 'json';
+            xhr.onload = function() {
+                var status = xhr.status;
+                if (status == 200) {
+                    resolve(xhr.response);
+                } else {
+                    reject(status);
+                }
+            };
+            xhr.send();
+        });
+    };
+    setInterval(getJSON('http://localhost:3000').then(function(data) {
+        document.getElementById("furnstatus").innerHTML="Thermostat Status:" + data.furnace;
+        document.getElementById("curtemp").innerHTML="Current Temperature:" + data.temperature;
+        document.getElementById("tempset").innerHTML="Temperature Setting:" + data.thermset;
+        document.getElementById("hyst").innerHTML="Hysteresis Setting:" + data.hysteresis;
+
+
+    }, function(status) { //error detection....
+        alert('Something went wrong.');
+    }),1000);
+
+
+</script>
+
+</body>
+
+</html>

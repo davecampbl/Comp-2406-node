@@ -1,0 +1,25 @@
+extends layout
+
+block header
+  script(src='/javascripts/home.js')
+
+block content
+  h1= title
+  - if(error)
+    div.alert-error #{error}
+  p Please log in
+  div
+    form(action="/start", method="post")
+        div.control-group.input-append
+            input(type="text", name="playername")
+            label.add-on(for="playername") Player Name
+        div.control-group.input-append
+            input(type="password", name="password")
+            label.add-on(for="password") Password
+            
+        button(type="submit") Start
+        button#register(type="button") Register
+    if onlinePlayers
+      br
+      p Currently Playing:
+      p= onlinePlayers

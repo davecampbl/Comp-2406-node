@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>COMP2501 - Tutorial 1</title>
+<link href="template.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<p class="header">COMP 2406 - Fall 2014 Tutorial #4</p>
+<p class="header subheader">HTTPS Secure Connection and Thermostat Mockup</p>
+<hr/>
+<p>&copy; L.D. Nel 2014</p>
+<hr />
+<p class="red">Revisions</p>
+<p class="red">&nbsp;</p>
+<hr />
+<p class="segment-header">Description:</p>
+<p>The purpose of this tutorial is to get you  working with HTTPS to form a secure connection between your browser and server. To proceed with this tutorial you will need to get a SSL private key and certificate. I've described how to do it on our Linux virtual machine. You may want to investigate how to do it on Windows or Mac. (Once you've created the key and certificate you can use it in your OS of choice for doing the node.js server.)</p>
+<p>We will also build a HTML mockup of the thermostat browser page you intend to build for assignment #2.</p>
+<p class="red">IMPORTANT: This tutorial is meant as a homework assignment and for you to demonstrate your results at your tutorial session. You will not be able to complete it if you only start when you come to the tutorial. You will need to read about and learn those aspects of javascript that pertain to this tutorial on your own and come up with a strategy to solve the problems.</p>
+<p>To get credit for the tutorial you must complete, or make significant progress on, the exercise problems provided and demonstrate your results to the tutorial TA before you leave the tutorial.<br />
+</p>
+<p>&nbsp;</p>
+<hr/>
+<p class="segment-header">Instructions:<br />
+</p>
+<p class="segment-header"><span class="black-bold">Preliminary)</span></p>
+<p>Run the following server from the demo code folder:</p>
+<p class="code">node http_server.js</p>
+<p>and test it by opening a browser to:</p>
+<p class="code">http://localhost:3000/index.html</p>
+<p>The demo code uses an HTTP server. We want to change that to use secure HTTPS instead which sends encrypted messages through the network. To do that you will need an SSL  key and signed certificate.</p>
+<p class="segment-header">&nbsp;</p>
+<p class="segment-header"><span class="black-bold">Problem 1)</span></p>
+<p>Generating your SSL key and certificate pair:</p>
+<p>To participate in an HTTPS connection the parties involved both need to have an encryption key and certificate. The browser already has its own, but you will need them for your server. Keys and certificates can be generated using an  OpenSSL library which is installed by default in linux. Here is the procedure to generate these two files on our linux virtual box image. Once you have generated your key/certificate pair you can move those files to the OS of your choice to build the server. OpenSSL is also available on Windows or Mac but you will have to look up how to install that capability if you want to generate your keys that way. There are also web sites that will allow you to generate free signed keys and of course ultimately you can buy a certificate from a respected certificate authority for a production server. (If you find a nice procedure to generate keys email me the instructions and I can post them for the other students.)</p>
+<p>Instructions:</p>
+<p>Start up the VirtualBox application and launch our COMP 2406-3000 appliance. Sign into the student account with password: <span class="code">tneduts!</span></p>
+<p>Open a terminal window in which to execute the following commands.</p>
+<p>1) Generate a public/private key for the server using the openssl command:</p>
+<p class="code">openssl genrsa -out serverkey.pem 2048</p>
+<p>This will produce a file called <span class="code">serverkey.pem</span> (in privacy enhanced mail format) which is an RSA private/public key using 2048 bits.</p>
+<p>2) Generate a certificate request using the following command.</p>
+<p class="code">openssl req -new -key serverkey.pem -out server.csr</p>
+<p>This command will ask you a bunch of questions and will produce a file <span class="code">server.csr</span> which is your certrificate request file. Here is the output window showing me making up a certificate request.</p>
+<p><img src="images/keygen1.png" width="865" height="606" alt="key1" /></p>
+<p>3) It is recommended that you remove the passphrase from the key as follows:</p>
+<p class="code">mv serverkey.pem temp.pem</p>
+<p class="code">openssl rsa -in temp.pem -out serverkey.pm</p>
+<p>This should resave your <span class="code">serverkey.pem</span> with passphrase removed. (Note I skipped this step when making the demo code and it did not seem to make a difference. If you don't do this you might be asked for your secret passphrase when you go to make an HTTPS connection).</p>
+<p>4) Sign the certificatea. That is, generate a self-signed certificate using your key and certificate request:</p>
+<p class="code">openssl x509 -req -days 365 -in server.csr -signkey serverkey.pem -out servercert.crt</p>
+<p>This will produce a file: <span class="code">servercert.crt</span> that is your self-signed certificate.</p>
+<p>You will need your <span class="code">serverkey.pem</span> and <span class="code">servercert.crt</span> files to implement an HTTPS  server. You can, of course, name the files whatever you want. The key file should be kept very private because it contains within it your private key. The certificate on the other hand is going to be sent to clients when an HTTPS connection is made.</p>
+<p>Note: You can also accomplish all of the above using this one compound command:</p>
+<p class="code">openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout serverkey.pem -out servercert.crt</p>
+<p>&nbsp;</p>
+<p>The <span class="code">-nodes</span> above has nothing to do with node.js. It means &quot;no DES encription&quot;.</p>
+<p>Your key file and self-signed certificate can now be used for your server that will use HTTPS. Move these files to the OS, or environment, where you want to build your node.js HTTPS server.</p>
+<p>Finally while you are at it, create a second key/certificate pair called something like client-key that you can use later for implementing a secure client as opposed to a secure server. You can save these keys for later use. the <span class="code">-days 365</span> options above means your certificates will be good for one year.</p>
+<p class="code">&nbsp;</p>
+<p class="segment-header"><span class="black-bold">Problem 2)</span></p>
+<p>We want to modify the demo server to use HTTPS instead of HTTP. Here are the steps.</p>
+<p>&nbsp;</p>
+<p>1) Your code needs to <span class="code">require('https') </span>instead of<span class="code"> 'http'</span>. Change the statement</p>
+<p class="code">var http = require('http');</p>
+<p>to the following instead:</p>
+<p class="code">var https = require('https');</p>
+<p>&nbsp;</p>
+<p>2) Add the file sytem module <span class="code">'fs'</span> and the following code to create an &quot;options&quot; object containing the SSL key and certificate:</p>
+<p class="code">var fs = require('fs');</p>
+<p class="code">//Private SSL key and signed certificate<br />
+  var options = {<br />
+  key: fs.readFileSync('serverkey.pem'),<br />
+  cert: fs.readFileSync('servercert.crt')<br />
+};</p>
+<p>3) Modify the </p>
+<p class="code">http.createServer(function(req,res){...});</p>
+<p>to the following instead:</p>
+<p><span class="code">https.createServer(options, function(req,res){...});</span><br />
+</p>
+<p></p>
+<p>Also modify the server code to output <span class="code">'Hello Secure World'</span> instead of just <span class="code">'Hello World'</span>. You should now be able to launch your server and connect to it securely from a browser by visiting:</p>
+<p class="code">https://localhost:3000/whatever.html</p>
+<p>Notice the browser will probably complain about the certificate not being secure. You will have to dismiss its complaints. It is unhappy because you self-signed your certificate instead of having a trusted certificate authority issue the certificate. Even after you connect there will likely be an indicator in the browser that the certificate is not trusted as shown below for Internet Explorer.</p>
+<p>&nbsp;</p>
+<p><img src="images/dialog.png" width="756" height="437" alt="dialog" /></p>
+<p></p>
+<p>&nbsp;</p>
+<p class="segment-header"><span class="black-bold">Problem 3)</span></p>
+<p class="segment-header"><span class="black-bold">The Heat Is On</span></p>
+<p>Assignment #2 requires that you build an &quot;internet of things&quot; that includes, among others, a browser page with which to control a furnace themostat. For this problem build a mockup  HTML page for controlling the thermostat. That is, visualize what the page should look like including buttons, textfields, labels and other controls or displays you want. Then do some research on how to create these in HTML and provide an HTML page. Additionally you can do some research on how to position and format the elements using CSS if you want.</p>
+<p>You will be asked to open the page just locally with a Browser. It does not need to be served by a server for this question. We just want to see an HTML mockup of the page you plan to use to control your thermostat and which will display temperature and weather information consistent with the requirements of assignment #2.</p>
+<p>&nbsp;</p>
+<p><span class="red">When you have completed these problems demonstrate your code to a TA's to get credit for the tutorial.</span> </p>
+<p>&nbsp;</p>
+
+</body>
+</html>

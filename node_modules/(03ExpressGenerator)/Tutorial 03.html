@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>COMP2501 - Tutorial 1</title>
+<link href="template.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<p class="header">COMP 2406 - Fall 2014 Tutorial #3</p>
+<p class="header subheader">Javascript Modules</p>
+<hr/>
+<p>&copy; L.D. Nel 2014</p>
+<hr />
+<p class="red">Revisions</p>
+<p class="red">&nbsp;</p>
+<hr />
+<p class="segment-header">Description:</p>
+<p>The purpose of this tutorial is to get you  working with modular code in Javascript. As code gets complex it is usual to break it up into modules that hide much of their own details and expose some public features to other code. Javascript provides several mechanisms to do this. Most notably, functions, closures and by placing module code in its own .js file and then exporting the desired features to other code using the <span class="code">exports</span> or <span class="code">module.exports</span> statements. </p>
+<p>In this tutorial you will work with code that is organized in modules like that. Note we are not talking about the npm modules that you install with the npm node package manager. Rather we are talking about simple ways to modularize your own code and import your own modules with the <span class="code">requires()</span> function. We will also look at how a module can emit events that can be caught asynchronously by other modules. This is very much in the spirit of how node.js does things and will help you understand how the web sever code based on node.js and express.js works.</p>
+<p class="red">IMPORTANT: This tutorial is meant as a homework assignment and for you to demonstrate your results at your tutorial session. You will not be able to complete it if you only start when you come to the tutorial. You will need to read about and learn those aspects of javascript that pertain to this tutorial on your own and come up with a strategy to solve the problems.</p>
+<p>The tutorial and code files are available on the course web site and there should also be a .zip with all the files together so you can download them all at once if that is more convenient.</p>
+<p>To get credit for the tutorial you must complete, or make significant progress on, the exercise problems provided and demonstrate your results to the tutorial TA before you leave the tutorial.<br />
+</p>
+<p>&nbsp;</p>
+<hr/>
+<p class="segment-header">Instructions:<br />
+</p>
+<p class="segment-header"><span class="black-bold">Preliminary)</span></p>
+<p>Run the following two examples from the demo code folder:</p>
+<p class="code">node 01_ownModules.js</p>
+<p>and </p>
+<p class="code">node 02_calcExample.js</p>
+<p>Open the source files and examine these files and those of the helper modules that they <span class="code">require()</span>. Look at how they are different. In particular look at how the first example is based on a module that uses individual <span class="code">exports</span> whereas the second example is based on a module that uses <span class="code">module.exports</span> instead. Once you have made yourself familiar with this code go on to the problems below.</p>
+<p class="segment-header">&nbsp;</p>
+<p class="segment-header"><span class="black-bold">Problem 1)</span></p>
+<p>Study and run  the short demo code:</p>
+<p class="code">node 03_module_exportsExample.js</p>
+<p>and explain to the TA why the output is what it is and what the significance of it is.</p>
+<p class="code">&nbsp;</p>
+<p class="segment-header"><span class="black-bold">Problem 2)</span></p>
+<p>Modify the code of example <span class="code">node 02_calcExample.js</span> and its helper module <span class="code">Calculator.js</span> so that it can be used to calculate restaurant bills that have both a tax and a tip component.</p>
+<p>1) Change the  <span class="code">02_calcExample.js</span> file from: </p>
+<p class="code">var Calculator = require(&quot;./Calculator.js&quot;);</p>
+<p class="code">var taxCalculator = new Calculator(13); //13% Ontario HST</p>
+<p class="code">var itemPrice = 200; //$200.00</p>
+<p class="code">console.log(&quot;price: $&quot; + itemPrice);<br />
+  console.log(&quot;tax:   $&quot; + taxCalculator.calcTax(itemPrice));<br />
+  console.log(&quot;---------------&quot;);<br />
+  console.log(&quot;total: $&quot; + taxCalculator.calcTotal(itemPrice));</p>
+<p></p>
+<p>to the following: (Notice we are passing in two parameters: one for tax rate and one for tip rate). Also make whatever changes are necessary in the <span class="code">Calculator.js</span> module.</p>
+<p class="code">var Calculator = require(&quot;./Calculator.js&quot;);</p>
+<p class="code">var calculator = new Calculator(13,15); //13%tax 15%tip<br />
+</p>
+<p class="code">var itemPrice = 200; //$200.00</p>
+<p class="code">console.log(&quot;price: $&quot; + itemPrice);<br />
+  console.log(&quot;tip:   $&quot; + calculator.calcTip(itemPrice));</p>
+<p class="code">console.log(&quot;tax:   $&quot; + calculator.calcTax(itemPrice));<br />
+  console.log(&quot;---------------&quot;);<br />
+console.log(&quot;total: $&quot; + calculator.calcTotal(itemPrice));</p>
+<p></p>
+<p>&nbsp;</p>
+<p class="segment-header"><span class="black-bold">Problem 3)</span></p>
+<p class="segment-header"><span class="black-bold">The Heat Is On</span></p>
+<p>Open the run the run the example:</p>
+<p class="code">node 04_timer.js</p>
+<p>See how a simple timer is set up by having a function respond asynchronously to a timeout event and then recursively regenerating the timeout.  Once started the output will continue forever until you hit cntl-C. The output of this example is meant to represent the falling temperature of a room. The reason the temperature is falling is because there is no furnace coming on to heat the room. </p>
+<p><img src="images/problem3-1.png" alt="p3" /></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Now  open and run the next example:</p>
+<p class="code">node 05_thermostat.js</p>
+<p>This time we have a helper module <span class="code">Thermostat.js</span> meant to implement a thermostat. Notice how the  thermostat is set up as an event emitter. It is continously being told the room temperature. Notice that when the temperature drops below about 16 that it continuously emits events meant to turn a furnace on. Notice also how the main file <span class="code">05_thermostat.js</span> is catching these events and printing the message that a furnace needs to be turned on.</p>
+<p>&nbsp;</p>
+<p><img src="images/problem3-2.png" width="658" height="316" alt="p3-2" /></p>
+<p>&nbsp;</p>
+<p><span class="segment-header"><span class="black-bold">Problem 3 -PartA </span></span></p>
+<p>Modify the code in <span class="code">05_themostat.js</span> so that the temporary boolean var <span class="code">furnaceIsOn</span> is set based on the caught events and hence the room should start warming up. Also change the code catching the events so that a message is only output when the furnace changes states from on to off. Once you have made these changes the output should show the room cooling, then the furnace warming it up and turning off, then the room starts cooling again etc. The output should look like this:</p>
+<p><img src="images/problem3-3.png" width="628" height="644" alt="p3-3" /></p>
+<p>&nbsp;</p>
+<p>Finally we come to the real objective. We want to build an actual furnace module <span class="code">Furnace.js</span>. This should model a furnace and handle the events emitted from the thermostat. In particular, build a <span class="code">Furnace.js</span> module so that the code in the file <span class="code">06_furnaceExample.js</span> can run as is and produce the same output as above. The source code for this file is shown below. Notice how the thermostat is passed to the furnace when it is being constructed. Also notice the event catching code has obviously been moved to the furnace because it is no longer in the main source code. The following source file and the <span class="code">Thermostat.js</span> files should not need modification. You just need to supply the <span class="code">Furnace.js</span> module. Use the <span class="code">Calculator.js</span> and <span class="code">Thermostatic.js</span> modules for ideas on how to build the <span class="code">Furnace.js</span> module.</p>
+<p><img src="images/problem3-4.png" width="713" height="834" alt="p3-4" /></p>
+<pre>&nbsp;</pre>
+<p><span class="red">When you have completed these problems demonstrate your code to a TA's to get credit for the tutorial.</span> </p>
+<p>&nbsp;</p>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  - if(error)
+    div.alert-error #{error}
+  p Please enter the name of the song you wish to find.
+  div
+    form(action="/search", method="post")
+        div.control-group.input-append
+            input(type="text", name="search")
+            label.add-on(for="search") Search
+            br
+        button(type="submit") Search
+
+      form(action="/upload", method="post")
+          div.control-group.input-append
+              input(type="file", name="upload")
+              label.add-on(for="upload") Choose a file
+              br
+          button(type="submit") Upload Song
